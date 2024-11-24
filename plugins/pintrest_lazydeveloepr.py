@@ -34,6 +34,7 @@ async def download_pintrest_vid(client, message, url):
 
             get_url = get_download_url(url)
             j = download_video(get_url)
+            print("Touched download_video")
             thumb_image_path = TMP_DOWNLOAD_DIRECTORY + "thumb_image.jpg"
 
             if not os.path.isdir(TMP_DOWNLOAD_DIRECTORY):
@@ -56,8 +57,10 @@ async def download_pintrest_vid(client, message, url):
                     os.path.dirname(os.path.abspath(j)),
                     (duration / 2)
                 )
+                print("Took screenshot")
 
             c_time = time.time()
+            print("Trying to send video on telegrm !")
             await client.send_video(
                 message.chat.id,
                 video=j,
