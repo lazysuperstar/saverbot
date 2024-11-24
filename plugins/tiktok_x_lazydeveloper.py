@@ -14,6 +14,23 @@ from config import TEL_USERNAME
 
 TELEGRAM_MAX_SIZE_MB = 200
 
+
+def extract_caption_with_ytdlp(url):
+    try:
+        options = {
+            'quiet': True,  # Suppress yt-dlp's output
+            'skip_download': True,  # Don't download the video, only extract metadata
+        }
+        with yt_dlp.YoutubeDL(options) as ydl:
+            info = ydl.extract_info(url, download=False)  # Extract metadata
+            # Extract title or any other metadata
+            title = info.get('title', 'No title available')
+            description = info.get('description', '')
+            return title, description
+    except Exception as e:
+        print(f"Error extracting caption with yt-dlp: {e}")
+        return None, None
+
 # Function to handle real-time download progress
 async def download_progress(d, message):
     if d['status'] == 'downloading':
@@ -77,7 +94,19 @@ async def download_from_lazy_tiktok_and_x(client, message, url):
     try:
         bot_username = client.username if client.username else TEL_USERNAME
         caption_lazy = f".\nᴡɪᴛʜ ❤ @{bot_username}\n."
-
+        
+        try:
+            title, description = extract_caption_with_ytdlp(url)
+        except Exception as LazyDeveloper:
+            print(LazyDeveloper)
+            pass
+        
+        new_caption = title if title else " "
+        while len(new_caption) + len(caption_lazy) > 1024:
+            new_caption = new_caption[:-1]  # Trim caption if it's too long
+        new_caption = new_caption + caption_lazy  # Add bot username at the end
+        # Initialize media list
+    
         format = "video"
         TEMP_DOWNLOAD_FOLDER = f"./downloads/{message.from_user.id}/{time.time()}"
         if not os.path.exists(TEMP_DOWNLOAD_FOLDER):
@@ -85,7 +114,7 @@ async def download_from_lazy_tiktok_and_x(client, message, url):
         destination_folder = TEMP_DOWNLOAD_FOLDER  # Use the temporary download folder
         print(f"continue to download to folder : {TEMP_DOWNLOAD_FOLDER}")
         # Send the initial message and keep it for updates
-        message = await message.reply_text(f'Starting the {format} download from: {url}', disable_webpage_preview=True)
+        message = await message.reply_text(f'Starting the {format} download from: {url}')
 
         # Start the download and update the same message
         success_download = await download_video(url, destination_folder, message, format)
@@ -121,7 +150,7 @@ async def download_from_lazy_tiktok_and_x(client, message, url):
         # Send the video/audio file to the user
         await message.edit_text(f'Sending the {format}...')
         try:
-            await message.reply_video(video=open(video_filename, 'rb'))
+            await message.reply_video(video=open(video_filename, 'rb'), caption=caption_lazy)
         except Exception as e:
             await message.edit_text(f'Error sending the file: {e}')
             print(f"Error sending the file: {e}")
