@@ -33,55 +33,24 @@ def expand_url(short_url):
         print(f"Error expanding URL: {e}")
         return None
 
-def expand_url_http_client(short_url):
-    parsed_url = urlparse(short_url)
-    conn = http.client.HTTPConnection(parsed_url.netloc)
-    conn.request("HEAD", parsed_url.path)
-    response = conn.getresponse()
-    if response.status in (301, 302):  # Redirect statuses
-        return response.getheader("Location")
-    return short_url  # No redirection
-
-def expand_url_with_api(short_url):
-    api_url = "https://unshorten.me/json/"
-    try:
-        response = requests.get(api_url + short_url)
-        if response.status_code == 200:
-            return response.json().get("resolved_url", short_url)
-    except requests.exceptions.RequestException as e:
-        print(f"Error: {e}")
-        return short_url
-
-
-
-
-
-
-
 # Command to make an announcement to users using the bot
 # credit  https://github.com/kamronbek29/pinterst_downloader/blob/master/pinterest-downloader.py thanks for create this repository!
-async def lazy_get_download_url(link):
-    # Make request to website 
-    post_request = requests.post('https://www.expertsphp.com/download.php', data={'url': link})
+# async def lazy_get_download_url(link):
+#     # Make request to website 
+#     post_request = requests.post('https://www.expertsphp.com/download.php', data={'url': link})
 
-    # Get content from post request
-    request_content = post_request.content
-    str_request_content = str(request_content, 'utf-8')
-    download_url = pq(str_request_content)('table.table-condensed')('tbody')('td')('a').attr('href')
-    print(download_url)
-    return download_url
+#     # Get content from post request
+#     request_content = post_request.content
+#     str_request_content = str(request_content, 'utf-8')
+#     download_url = pq(str_request_content)('table.table-condensed')('tbody')('td')('a').attr('href')
+#     print(download_url)
+#     return download_url
 
 
 async def download_pintrest_vid(client, message, url):
     try:
         full_url = expand_url(url)
         print(f"expand url => {full_url}")
-
-        full_url1 = expand_url_http_client(url)
-        print(f"expand_url_http_client => {full_url1}")
-
-        full_urlw = expand_url_with_api(url)
-        print(f"expand_url_with_api => {full_urlw}")
     except Exception as lazyerror:
         print(lazyerror)
 
@@ -90,59 +59,59 @@ async def download_pintrest_vid(client, message, url):
             ms = await message.reply("`trying`")
             # await message.reply_text("`Downloading The File..`")
             # query = get_text(message)
-            down = await lazy_get_download_url(full_url)
-            if '.mp4' in (down):
-                await message.reply_video(down)
-            elif '.gif' in (down):
-                await message.reply_animation(down)
-            else:
-                await message.reply_photo(down)
-            await ms.delete()
-            # get_url = get_download_url(url)
-            # j = download_video(get_url)
-            # print("Touched download_video")
-            # thumb_image_path = TMP_DOWNLOAD_DIRECTORY + "thumb_image.jpg"
-
-            # if not os.path.isdir(TMP_DOWNLOAD_DIRECTORY):
-            #     os.makedirs(TMP_DOWNLOAD_DIRECTORY)
-
-            # metadata = extractMetadata(createParser(j))
-            # duration = 0
-
-            # if metadata.has("duration"):
-            #     duration = metadata.get('duration').seconds
-            #     width = 0
-            #     height = 0
-            #     thumb = None
-
-            # if os.path.exists(thumb_image_path):
-            #     thumb = thumb_image_path
+            # down = await get_download_url(full_url)
+            # if '.mp4' in (down):
+            #     await message.reply_video(down)
+            # elif '.gif' in (down):
+            #     await message.reply_animation(down)
             # else:
-            #     thumb = await take_screen_shot(
-            #         j,
-            #         os.path.dirname(os.path.abspath(j)),
-            #         (duration / 2)
-            #     )
-            #     print("Took screenshot")
+            #     await message.reply_photo(down)
+            # await ms.delete()
+            get_url = get_download_url(full_url)
+            j = download_video(get_url)
+            print("Touched download_video")
+            thumb_image_path = TMP_DOWNLOAD_DIRECTORY + "thumb_image.jpg"
 
-            # c_time = time.time()
-            # print("Trying to send video on telegrm !")
-            # await client.send_video(
-            #     message.chat.id,
-            #     video=j,
-            #     thumb=thumb,
-            #     caption="Download by @LazyDeveloeprr",
-            #     duration=duration,
-            #     width=width,
-            #     height=height,
-            #     progress=progress_for_pyrogram,
-            #     progress_args=("⚠️__Please wait...__\n__Processing file upload....__",  ms, c_time)
+            if not os.path.isdir(TMP_DOWNLOAD_DIRECTORY):
+                os.makedirs(TMP_DOWNLOAD_DIRECTORY)
+
+            metadata = extractMetadata(createParser(j))
+            duration = 0
+
+            if metadata.has("duration"):
+                duration = metadata.get('duration').seconds
+                width = 0
+                height = 0
+                thumb = None
+
+            if os.path.exists(thumb_image_path):
+                thumb = thumb_image_path
+            else:
+                thumb = await take_screen_shot(
+                    j,
+                    os.path.dirname(os.path.abspath(j)),
+                    (duration / 2)
+                )
+                print("Took screenshot")
+
+            c_time = time.time()
+            print("Trying to send video on telegrm !")
+            await client.send_video(
+                message.chat.id,
+                video=j,
+                thumb=thumb,
+                caption="Download by @LazyDeveloeprr",
+                duration=duration,
+                width=width,
+                height=height,
+                progress=progress_for_pyrogram,
+                progress_args=("⚠️__Please wait...__\n__Processing file upload....__",  ms, c_time)
                 
-            # )
-            # # await message.delete()
-            # # await ms.delete()
-            # os.remove(TMP_DOWNLOAD_DIRECTORY + 'pinterest_video.mp4')
-            # os.remove(thumb_image_path)
+            )
+            # await message.delete()
+            # await ms.delete()
+            os.remove(TMP_DOWNLOAD_DIRECTORY + 'pinterest_video.mp4')
+            os.remove(thumb_image_path)
         else:
             await message.reply("**bana komutla beraber link gönder.**\n\n`send me the link with the command.`")
     except FileNotFoundError:
