@@ -18,3 +18,4 @@ TikTokApi
 ffmpeg
 pyquery
 yt-dlp>=2023.3.4
+beautifulsoup4
