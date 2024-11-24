@@ -89,8 +89,6 @@ async def download_pintrest_vid(client, message, url):
     try:
         if full_url:
             ms = await message.reply("`trying`")
-            await message.reply_text("`Downloading The File..`")
-            query = get_text(message)
             down = await get_download_url(full_url)
             if '.mp4' in (down):
                 await message.reply_video(down)
