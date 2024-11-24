@@ -32,7 +32,8 @@ async def handle_incoming_message(client: Client, message: Message):
         for platform, handler in PLATFORM_HANDLERS.items():
             if platform in url:
                 lazydev = await ok.edit_text(f"Detected {platform} ᴜʀʟ!")
-                await handler(client, message, url, lazydev)
+                await lazydev.delete()
+                await handler(client, message, url)
                 return
 
     except Exception as e:

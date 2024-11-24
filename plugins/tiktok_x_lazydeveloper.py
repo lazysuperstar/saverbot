@@ -90,13 +90,14 @@ async def download_video(url, destination_folder, message, format="video"):
         print(f"Error during download: {e}")
         return False
 
-async def download_from_lazy_tiktok_and_x(client, message, url, lazydev):
+async def download_from_lazy_tiktok_and_x(client, message, url):
     try:
         bot_username = client.username if client.username else TEL_USERNAME
         caption_lazy = f".\nᴡɪᴛʜ ❤ @{bot_username}\n."
         
         try:
             title, description = extract_caption_with_ytdlp(url)
+            print(title)
         except Exception as LazyDeveloper:
             print(LazyDeveloper)
             pass
@@ -115,7 +116,7 @@ async def download_from_lazy_tiktok_and_x(client, message, url, lazydev):
         # print(f"continue to download to folder : {TEMP_DOWNLOAD_FOLDER}")
         # Send the initial message and keep it for updates
         # message = await message.reply_text(f'Starting the {format} download from')
-        progress_message2 = await lazydev.edit_text("<i>⚙ ᴘʀᴇᴘᴀʀɪɴɢ ᴛᴏ download...</i>")
+        progress_message2 = await message.reply("<i>⚙ ᴘʀᴇᴘᴀʀɪɴɢ ᴛᴏ download...</i>")
         await asyncio.sleep(1)
         
         # Start the download and update the same message

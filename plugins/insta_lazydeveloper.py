@@ -11,22 +11,7 @@ import asyncio
 insta = instaloader.Instaloader()
 
 
-# regex
-insta_post_or_reel_reg = r'(?:https?://www\.)?instagram\.com\S*?/(p|reel)/([a-zA-Z0-9_-]{11})/?'
-
-def get_post_or_reel_shortcode_from_link(link):
-    match = re.search(insta_post_or_reel_reg, link)
-    if match:
-        return match.group(2)
-    else:
-        return False
-
-def get_ready_to_work_insta_instance():
-    L = instaloader.Instaloader()
-    return L
-
-
-async def download_from_lazy_instagram(client, message, url, lazydev):
+async def download_from_lazy_instagram(client, message, url):
     # Extract shortcode from Instagram URL (assuming this is a function you implemented)
     post_shortcode = get_post_or_reel_shortcode_from_link(url)
     
@@ -34,7 +19,7 @@ async def download_from_lazy_instagram(client, message, url, lazydev):
         print(f"log:\n\nuser: {message.chat.id}\n\nerror in getting post_shortcode")
         return  # Post shortcode not found, stop processing
     
-    progress_message2 = await lazydev.edit_text("<i>⚙ ᴘʀᴇᴘᴀʀɪɴɢ ᴛᴏ ꜰᴇᴛᴄʜ ᴄᴀᴘᴛɪᴏɴ...</i>")
+    progress_message2 = await message.reply("<i>⚙ ᴘʀᴇᴘᴀʀɪɴɢ ᴛᴏ ꜰᴇᴛᴄʜ ᴄᴀᴘᴛɪᴏɴ...</i>")
     await asyncio.sleep(1)
     
     # Get an instance of Instaloader (assuming this function initializes it)
@@ -52,9 +37,9 @@ async def download_from_lazy_instagram(client, message, url, lazydev):
      # Initialize media list
     
     progress_message3 = await progress_message2.edit_text("<i>⚡ ᴘʀᴏᴄᴇssɪɴɢ ʏᴏᴜʀ ꜰɪʟᴇ ᴛᴏ ᴜᴘʟᴏᴀᴅ ᴏɴ ᴛᴇʟᴇɢʀᴀᴍ...</i>")
-    await asyncio.sleep(1)
+    # await asyncio.sleep(1)
+    
     media_list = []
-
     # Handle sidecars (multiple media in a post)
     if post.mediacount > 1:
         sidecars = post.get_sidecar_nodes()
@@ -85,3 +70,18 @@ async def download_from_lazy_instagram(client, message, url, lazydev):
     lazydeveloper = await client.send_message(chat_id=message.chat.id, text=f"❤ ꜰᴇᴇʟ ꜰʀᴇᴇ ᴛᴏ sʜᴀʀᴇ ᴍᴇ ᴛᴏ ʏᴏᴜʀ ꜰʀɪᴇɴᴅ ᴄɪʀᴄʟᴇ...")
     await asyncio.sleep(100)
     await lazydeveloper.delete()
+
+
+# regex
+insta_post_or_reel_reg = r'(?:https?://www\.)?instagram\.com\S*?/(p|reel)/([a-zA-Z0-9_-]{11})/?'
+
+def get_post_or_reel_shortcode_from_link(link):
+    match = re.search(insta_post_or_reel_reg, link)
+    if match:
+        return match.group(2)
+    else:
+        return False
+
+def get_ready_to_work_insta_instance():
+    L = instaloader.Instaloader()
+    return L
