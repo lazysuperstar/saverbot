@@ -46,6 +46,38 @@ def expand_url(short_url):
 #     print(download_url)
 #     return download_url
 
+async def lazy_get_download_url(link):
+    try:
+        # Send POST request to the downloader service
+        post_request = requests.post(
+            'https://www.expertsphp.com/download.php',
+            data={'url': link},
+        )
+
+        # Parse the response content
+        response_content = post_request.content.decode('utf-8')
+        document = pq(response_content)
+
+        # Extract all download links
+        download_links = document('table.table-condensed tbody td a').items()
+        video_link = None
+        fallback_link = None
+
+        for link in download_links:
+            href = link.attr('href')
+            if href:
+                if '.mp4' in href:
+                    video_link = href
+                    break
+                elif not fallback_link:  # Store the first link as fallback
+                    fallback_link = href
+
+        # Prioritize video links, fallback to the first link if no video
+        return video_link or fallback_link
+
+    except Exception as e:
+        print(f"Error in lazy_get_download_url: {e}")
+        return None
 
 async def download_pintrest_vid(client, message, url):
     try:
@@ -57,16 +89,16 @@ async def download_pintrest_vid(client, message, url):
     try:
         if full_url:
             ms = await message.reply("`trying`")
-            # await message.reply_text("`Downloading The File..`")
-            # query = get_text(message)
-            # down = await get_download_url(full_url)
-            # if '.mp4' in (down):
-            #     await message.reply_video(down)
-            # elif '.gif' in (down):
-            #     await message.reply_animation(down)
-            # else:
-            #     await message.reply_photo(down)
-            # await ms.delete()
+            await message.reply_text("`Downloading The File..`")
+            query = get_text(message)
+            down = await get_download_url(full_url)
+            if '.mp4' in (down):
+                await message.reply_video(down)
+            elif '.gif' in (down):
+                await message.reply_animation(down)
+            else:
+                await message.reply_photo(down)
+            await ms.delete()
             get_url = get_download_url(full_url)
             j = download_video(get_url)
             print("Touched download_video")
