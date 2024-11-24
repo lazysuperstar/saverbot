@@ -93,11 +93,14 @@ async def download_video(url, destination_folder, message, format="video"):
 async def download_from_lazy_tiktok_and_x(client, message, url):
     try:
         bot_username = client.username if client.username else TEL_USERNAME
-        caption_lazy = f".\nᴡɪᴛʜ ❤ @{bot_username}\n."
+        caption_lazy = f"\nᴡɪᴛʜ ❤ @{bot_username}"
         
+        progress_message2 = await message.reply("<i>⚙ ᴘʀᴇᴘᴀʀɪɴɢ ᴛᴏ download...</i>")
+        await asyncio.sleep(1)
+
         try:
             title, description = extract_caption_with_ytdlp(url)
-            print(title)
+            print(f"Title => : {title}")
         except Exception as LazyDeveloper:
             print(LazyDeveloper)
             pass
@@ -116,8 +119,7 @@ async def download_from_lazy_tiktok_and_x(client, message, url):
         # print(f"continue to download to folder : {TEMP_DOWNLOAD_FOLDER}")
         # Send the initial message and keep it for updates
         # message = await message.reply_text(f'Starting the {format} download from')
-        progress_message2 = await message.reply("<i>⚙ ᴘʀᴇᴘᴀʀɪɴɢ ᴛᴏ download...</i>")
-        await asyncio.sleep(1)
+        
         
         # Start the download and update the same message
         success_download = await download_video(url, destination_folder, message, format)
@@ -129,7 +131,7 @@ async def download_from_lazy_tiktok_and_x(client, message, url):
         # Get the name of the downloaded file
         video_filename = max([os.path.join(destination_folder, f) for f in os.listdir(
             destination_folder)], key=os.path.getctime)
-        print(video_filename)
+        # print(f"video filename:{video_filename}")
 
         # Check the file size
         file_size_mb = os.path.getsize(video_filename) / (1024 * 1024)
@@ -154,7 +156,7 @@ async def download_from_lazy_tiktok_and_x(client, message, url):
         progress_message3 = await progress_message2.edit_text("<i>⚡ ᴘʀᴏᴄᴇssɪɴɢ ʏᴏᴜʀ ꜰɪʟᴇ ᴛᴏ ᴜᴘʟᴏᴀᴅ ᴏɴ ᴛᴇʟᴇɢʀᴀᴍ...</i>")
         await asyncio.sleep(1)
         try:
-            await message.reply_video(video=open(video_filename, 'rb'), caption=caption_lazy)
+            await message.reply_video(video=open(video_filename, 'rb'), caption=new_caption)
         except Exception as e:
             await message.edit_text(f'Error sending the file: {e}')
             print(f"Error sending the file: {e}")

@@ -15,5 +15,5 @@ tiktok-scraper
 shazamio
 spotipy
 TikTokApi
-
+ffmpeg
 yt-dlp>=2023.3.4

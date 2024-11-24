@@ -10,7 +10,7 @@ import asyncio
 # Initialize @LazyDeveloperr Instaloader 
 from plugins.insta_lazydeveloper import download_from_lazy_instagram 
 from plugins.tiktok_x_lazydeveloper import download_from_lazy_tiktok_and_x
-
+from plugins.pintrest_lazydeveloepr import download_pintrest_vid
 @Client.on_message(filters.private & filters.text & ~filters.command(['start','users','broadcast']))
 async def handle_incoming_message(client: Client, message: Message):
     try:
@@ -27,7 +27,9 @@ async def handle_incoming_message(client: Client, message: Message):
             "instagram.com": download_from_lazy_instagram,
             "tiktok.com": download_from_lazy_tiktok_and_x,
             "twitter.com": download_from_lazy_tiktok_and_x,
-            "x.com": download_from_lazy_tiktok_and_x
+            "x.com": download_from_lazy_tiktok_and_x,
+            "pin.it": download_pintrest_vid,
+            "pintrest.com": download_pintrest_vid
         }
         for platform, handler in PLATFORM_HANDLERS.items():
             if platform in url:
