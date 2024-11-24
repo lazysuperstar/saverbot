@@ -22,6 +22,40 @@ logger = logging.getLogger(__name__)
 TMP_DOWNLOAD_DIRECTORY = os.environ.get(
     "TMP_DOWNLOAD_DIRECTORY", "./DOWNLOADS/")
 
+import http.client
+from urllib.parse import urlparse
+
+def expand_url(short_url):
+    try:
+        response = requests.get(short_url, allow_redirects=True)
+        return response.url  # Returns the expanded URL
+    except requests.exceptions.RequestException as e:
+        print(f"Error expanding URL: {e}")
+        return None
+
+def expand_url_http_client(short_url):
+    parsed_url = urlparse(short_url)
+    conn = http.client.HTTPConnection(parsed_url.netloc)
+    conn.request("HEAD", parsed_url.path)
+    response = conn.getresponse()
+    if response.status in (301, 302):  # Redirect statuses
+        return response.getheader("Location")
+    return short_url  # No redirection
+
+def expand_url_with_api(short_url):
+    api_url = "https://unshorten.me/json/"
+    try:
+        response = requests.get(api_url + short_url)
+        if response.status_code == 200:
+            return response.json().get("resolved_url", short_url)
+    except requests.exceptions.RequestException as e:
+        print(f"Error: {e}")
+        return short_url
+
+
+
+
+
 
 
 # Command to make an announcement to users using the bot
@@ -40,12 +74,23 @@ async def lazy_get_download_url(link):
 
 async def download_pintrest_vid(client, message, url):
     try:
+        full_url = expand_url(url)
+        print(f"expand url => {full_url}")
 
-        if url:
+        full_url1 = expand_url_http_client(url)
+        print(f"expand_url_http_client => {full_url1}")
+
+        full_urlw = expand_url_with_api(url)
+        print(f"expand_url_with_api => {full_urlw}")
+    except Exception as lazyerror:
+        print(lazyerror)
+
+    try:
+        if full_url:
             ms = await message.reply("`trying`")
             # await message.reply_text("`Downloading The File..`")
             # query = get_text(message)
-            down = await lazy_get_download_url(url)
+            down = await lazy_get_download_url(full_url)
             if '.mp4' in (down):
                 await message.reply_video(down)
             elif '.gif' in (down):
