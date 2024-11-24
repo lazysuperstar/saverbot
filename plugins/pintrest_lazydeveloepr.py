@@ -89,7 +89,7 @@ async def download_pintrest_vid(client, message, url):
     try:
         if full_url:
             ms = await message.reply("`trying`")
-            down = await get_download_url(full_url)
+            down = await lazy_get_download_url(full_url)
             if '.mp4' in (down):
                 await message.reply_video(down)
             elif '.gif' in (down):
@@ -97,7 +97,8 @@ async def download_pintrest_vid(client, message, url):
             else:
                 await message.reply_photo(down)
             await ms.delete()
-            get_url = get_download_url(full_url)
+            print("BY using another method => 2")
+            get_url = lazy_get_download_url(full_url)
             j = download_video(get_url)
             print("Touched download_video")
             thumb_image_path = TMP_DOWNLOAD_DIRECTORY + "thumb_image.jpg"
@@ -329,6 +330,7 @@ def download_video(url):
     if not os.path.isdir(TMP_DOWNLOAD_DIRECTORY):
         os.makedirs(TMP_DOWNLOAD_DIRECTORY)
     video_to_download = request.urlopen(url).read()
+    
     with open(TMP_DOWNLOAD_DIRECTORY + 'pinterest_video.mp4', 'wb') as video_stream:
         video_stream.write(video_to_download)
     return TMP_DOWNLOAD_DIRECTORY + 'pinterest_video.mp4'
