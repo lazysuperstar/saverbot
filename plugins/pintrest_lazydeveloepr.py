@@ -98,7 +98,7 @@ async def download_pintrest_vid(client, message, url):
                 await message.reply_photo(down)
             await ms.delete()
             print("BY using another method => 2")
-            get_url = lazy_get_download_url(full_url)
+            get_url = await lazy_get_download_url(full_url)
             j = download_video(get_url)
             print("Touched download_video")
             thumb_image_path = TMP_DOWNLOAD_DIRECTORY + "thumb_image.jpg"
