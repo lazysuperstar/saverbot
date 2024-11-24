@@ -14,12 +14,13 @@ from plugins.tiktok_x_lazydeveloper import download_from_lazy_tiktok_and_x
 @Client.on_message(filters.private & filters.text & ~filters.command(['start','users','broadcast']))
 async def handle_incoming_message(client: Client, message: Message):
     try:
-        if message.from_user.id not in ADMIN:
+        user_id = message.from_user.id  # Get user ID dynamically
+
+        if user_id not in ADMIN:
             await client.send_message(chat_id=message.chat.id, text=f"Sorry Sweetheart! cant talk to you \nTake permission from my Lover @LazyDeveloperr")
         # Extract the message text and user ID
         url = message.text.strip()
-        user_id = message.from_user.id  # Get user ID dynamically
-        await message.reply("🔄 ᴅᴇᴛᴇᴄᴛɪɴɢ ᴜʀʟ ᴛʏᴘᴇ ᴀɴᴅ ᴘʀᴏᴄᴇssɪɴɢ ᴛʜᴇ ᴅᴏᴡɴʟᴏᴀᴅ...")
+        ok = await message.reply("🔄 ᴅᴇᴛᴇᴄᴛɪɴɢ ᴜʀʟ ᴛʏᴘᴇ ᴀɴᴅ ᴘʀᴏᴄᴇssɪɴɢ ᴛʜᴇ ᴅᴏᴡɴʟᴏᴀᴅ...")
 
         # Check if the URL contains 'instagram.com'
         PLATFORM_HANDLERS = {
@@ -30,8 +31,8 @@ async def handle_incoming_message(client: Client, message: Message):
         }
         for platform, handler in PLATFORM_HANDLERS.items():
             if platform in url:
-                await message.reply(f"Detected {platform} ᴜʀʟ!")
-                await handler(client, message, url)
+                lazydev = await ok.edit_text(f"Detected {platform} ᴜʀʟ!")
+                await handler(client, message, url, lazydev)
                 return
 
     except Exception as e:
