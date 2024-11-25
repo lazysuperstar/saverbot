@@ -112,20 +112,22 @@ import time
 import asyncio
 from plugins.tiktok_x_lazydeveloper import download_video 
 async def getlink(url):
+    link = None
     try:
-        video_links = f.get_links(url)
+        link = f.get_links(url)
     except Exception as lazyerror:
         print(lazyerror)
-    return video_links
+    return link
 
-async def downlaod_vid(video_links):
+async def downlaod_vid(url):
+    saved = None
     try:
-        saved_to = f.download_video(
-        video_links,
+        saved = f.download_video(
+        url,
         progress_bar=False)
     except Exception as lazyerror:
         print(lazyerror)
-    return saved_to
+    return saved
 
 async def download_and_send_video(client, message, url):
     try:

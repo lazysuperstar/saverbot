@@ -15,9 +15,9 @@ HELP_TXT = Script.HELP_TEXT
 ABOUT_TXT = Script.ABOUT_TXT
 
 
-@Client.on_message(filters.regex(r'https?:\/\/(?:www\.)?(?:m\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=)?([a-zA-Z0-9_-]{11})$'))
-async def handle_youtube_link(bot, message):
-    video_id = get_youtube_video_id(message.text)
+# @Client.on_message(filters.regex(r'https?:\/\/(?:www\.)?(?:m\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=)?([a-zA-Z0-9_-]{11})$'))
+async def handle_youtube_link(bot, message, url):
+    video_id = get_youtube_video_id(url)
     youtube = YouTube(f'https://www.youtube.com/watch?v={video_id}')
     thumbnail_url = youtube.thumbnail_url
     title = youtube.title
@@ -52,10 +52,10 @@ async def handle_youtube_link(bot, message):
     except Exception as e:
         await bot.send_message(message.chat.id, f"Error: {e}")
 
-@Client.on_message(filters.regex(r"(?:(?:https?:)?//)?(?:www\.)?youtube\.com/playlist\?list=([a-zA-Z0-9_-]+)"))
-async def handle_youtube_playlist_link(bot, message):
+# @Client.on_message(filters.regex(r"(?:(?:https?:)?//)?(?:www\.)?youtube\.com/playlist\?list=([a-zA-Z0-9_-]+)"))
+async def handle_youtube_playlist_link(bot, message, url):
     try:
-        playlist_url = message.text
+        playlist_url = url
         chat_id = message.chat.id
         match = re.search(r"list=([A-Za-z0-9_-]+)", playlist_url)
         if match:
@@ -89,3 +89,22 @@ async def handle_youtube_playlist_link(bot, message):
 
     except Exception as e:
         await bot.send_message(message.chat.id, f"Error: {e}")
+
+
+async def download_youtube_video(client, message, url):
+    video_regex = r'https?:\/\/(?:www\.)?(?:m\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=)?([a-zA-Z0-9_-]{11})$'
+    playlist_regex = r"(?:(?:https?:)?//)?(?:www\.)?youtube\.com/playlist\?list=([a-zA-Z0-9_-]+)"
+
+    # match url
+    video_match = re.match(video_regex, url)
+    playlist_match = re.match(playlist_regex, url)
+
+    # proceed match
+    if video_match:
+        await handle_youtube_link(client, message, url)
+        print(f"handle_youtube_link")
+    elif playlist_match:
+        await handle_youtube_playlist_link(client, message, url)
+        print(f"handle_youtube_playlist_link")
+
+
