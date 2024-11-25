@@ -112,7 +112,7 @@ async def download_and_send_video(client, message, url):
 
         await client.send_video(
             message.chat.id,
-            open(saved_to, "rb"),
+            video=open(saved_to, "rb"),
             thumb=thumbnail,
             duration=video_duration,
             caption=video_links.title or "Here is your video! 🎥",
