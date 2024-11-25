@@ -20,3 +20,4 @@ pyquery
 yt-dlp>=2023.3.4
 beautifulsoup4
 fdown-api==0.0.3
+tqdm==4.66.5
