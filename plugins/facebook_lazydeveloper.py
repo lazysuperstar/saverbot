@@ -109,22 +109,41 @@ async def download_and_send_video(client, message, url):
         video_duration = video_links.duration_in_seconds
         lms = await z.edit_text("<i>⚡ Processing your file to upload...</i>")
         lst = time.time()
+        try:
+            # Open the file in binary mode and send it to Telegram
+            with open(saved_to, "rb") as video_file:
+                await client.send_video(
+                    message.chat.id,
+                    video_file,
+                    thumb=thumbnail,
+                    duration=video_duration,
+                    caption=video_links.title if video_links.title else "Here is your video! 🎥",
+                    progress=progress_for_pyrogram,
+                    progress_args=(
+                        f"Processing file upload",
+                        lms,
+                        lst
+                    )
+                )
+        except Exception as err:
+            await message.reply(f"An error occurred while uploading the video: {err}")
 
-        await client.send_video(
-            message.chat.id,
-            video=saved_to,
-            thumb=thumbnail,
-            duration=video_duration,
-            caption=video_links.title or "Here is your video! 🎥",
-            # progress=progress_for_pyrogram,
-            # progress_args=(
-            #     "Uploading file",
-            #     lms,
-            #     lst
-            # )
-        )
+
+        # await client.send_video(
+        #     message.chat.id,
+        #     open(saved_to, "rb"),
+        #     thumb=thumbnail,
+        #     duration=video_duration,
+        #     caption=video_links.title or "Here is your video! 🎥",
+        #     # progress=progress_for_pyrogram,
+        #     # progress_args=(
+        #     #     "Uploading file",
+        #     #     lms,
+        #     #     lst
+        #     # )
+        # )
         os.remove(saved_to)
-        # await lms.delete()
+        await lms.delete()
 
     except Exception as e:
         await message.reply(f"An error occurred: {e}")
