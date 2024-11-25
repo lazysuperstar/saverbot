@@ -62,6 +62,7 @@ f = Fdown()
 import os
 from helpo.lazyprogress import progress_for_pyrogram
 import time
+import asyncio
 
 async def getlink(url):
     try:
@@ -85,16 +86,19 @@ async def download_and_send_video(client, message, url):
         if not f.validate_url(url, True):
             await message.reply("❌ This is not a valid Facebook video link.")
             return
-
-        await message.reply("✅ Valid Facebook video link. Starting download...")
+        
+        x = await message.reply("✅ Valid Facebook video link. Starting download...")
 
         # Get video links
+        await asyncio.sleep(1)
+        y = await x.edit_text("<i>⚙Customising link, please wait</i>")
         video_links = await getlink(url)
         if not video_links:
             await message.reply("❌ Failed to fetch video links. Try again.")
             return
 
         # Download video
+        z = await y.edit_text("<i>⚙Downloading video to my server</i> \n⚠NOTE:- This process can take maximum 2 minute")
         saved_to = await downlaod_vid(video_links)
         if not saved_to:
             await message.reply("❌ Failed to download the video. Try again later.")
@@ -103,7 +107,7 @@ async def download_and_send_video(client, message, url):
         # Process and upload
         thumbnail = f.session.get(video_links.cover_photo).content if video_links.cover_photo else None
         video_duration = video_links.duration_in_seconds
-        lms = await message.reply("<i>⚡ Processing your file to upload...</i>")
+        lms = await z.edit_text("<i>⚡ Processing your file to upload...</i>")
         lst = time.time()
 
         await client.send_video(
@@ -112,14 +116,15 @@ async def download_and_send_video(client, message, url):
             thumb=thumbnail,
             duration=video_duration,
             caption=video_links.title or "Here is your video! 🎥",
-            progress=progress_for_pyrogram,
-            progress_args=(
-                "Uploading file",
-                lms,
-                lst
-            )
+            # progress=progress_for_pyrogram,
+            # progress_args=(
+            #     "Uploading file",
+            #     lms,
+            #     lst
+            # )
         )
         os.remove(saved_to)
+        await lms.delete()
 
     except Exception as e:
         await message.reply(f"An error occurred: {e}")
