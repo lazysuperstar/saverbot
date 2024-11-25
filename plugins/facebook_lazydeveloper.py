@@ -78,7 +78,7 @@ async def download_and_send_video(client, message, url):
     # thumbnail = f.session.get(video_links.cover_photo).content
     thumbnail = f.session.get(video_links.cover_photo).content if video_links.cover_photo else None
     
-    lms = await message.edit_text("<i>⚡ ᴘʀᴏᴄᴇssɪɴɢ ʏᴏᴜʀ ꜰɪʟᴇ ᴛᴏ ᴜᴘʟᴏᴀᴅ ᴏɴ ᴛᴇʟᴇɢʀᴀᴍ...</i>") 
+    lms = await message.reply("<i>⚡ ᴘʀᴏᴄᴇssɪɴɢ ʏᴏᴜʀ ꜰɪʟᴇ ᴛᴏ ᴜᴘʟᴏᴀᴅ ᴏɴ ᴛᴇʟᴇɢʀᴀᴍ...</i>") 
     lst = time.time()
     print("Uploading to telegram")
     await client.send_video(
