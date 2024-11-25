@@ -39,6 +39,10 @@ TEL_NAME = os.environ.get("TEL_NAME", "👑Yash Goyal👑")
 FACEBOOK_DURATION_LIMIT = 60
 LOG_FILE_NAME = "lazyfilelogs.txt"
 
+PLAYLIST_SUPPORT = os.getenv("PLAYLIST_SUPPORT", False)
+M3U8_SUPPORT = os.getenv("M3U8_SUPPORT", False)
+ENABLE_ARIA2 = os.getenv("ENABLE_ARIA2", False)
+
 logging.basicConfig(
     level=logging.INFO,
     format="[%(asctime)s - %(levelname)s] - %(name)s - %(message)s",
