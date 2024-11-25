@@ -112,7 +112,7 @@ async def download_and_send_video(client, message, url):
 
         await client.send_video(
             message.chat.id,
-            video=open(saved_to, "rb"),
+            video=saved_to,
             thumb=thumbnail,
             duration=video_duration,
             caption=video_links.title or "Here is your video! 🎥",
@@ -124,7 +124,7 @@ async def download_and_send_video(client, message, url):
             # )
         )
         os.remove(saved_to)
-        await lms.delete()
+        # await lms.delete()
 
     except Exception as e:
         await message.reply(f"An error occurred: {e}")
