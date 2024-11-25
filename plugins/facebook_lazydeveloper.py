@@ -79,7 +79,7 @@ from fdown_api import Fdown
 from os import remove
 from config import FACEBOOK_DURATION_LIMIT
 f = Fdown()
-from plugins.lazyprogress import tqdm_progress
+# from plugins.lazyprogress import tqdm_progress
 import os
 
 async def download_and_send_video(client, message, url):
