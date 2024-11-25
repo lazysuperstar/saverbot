@@ -29,7 +29,7 @@ async def handle_incoming_message(client: Client, message: Message):
             "x.com": download_from_lazy_tiktok_and_x,
             "pin.it": download_pintrest_vid,
             "pinterest.com": download_pintrest_vid,
-            "facebook.com": download_and_send_video,
+            "facebook.com": download_from_lazy_tiktok_and_x,
             "youtube.com": download_youtube_video,
             "youtu.be": download_youtube_video
         }
