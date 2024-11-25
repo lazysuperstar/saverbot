@@ -111,7 +111,7 @@ async def download_and_send_video(client, message, url):
         lst = time.time()
         try:
             # Open the file in binary mode and send it to Telegram
-            with open(saved_to, "rb") as video_file:
+            with open(f'{saved_to}.mp4', "rb") as video_file:
                 await client.send_video(
                     message.chat.id,
                     video_file,
