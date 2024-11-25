@@ -187,7 +187,7 @@ async def download_and_send_video(client, message, url):
         lms = await z.edit_text("<i>⚡ Processing your file to upload...</i>")
         lst = time.time()
         try:
-            await client.reply_video(
+            await message.reply_video(
                     message.chat.id,
                     open(f"{saved_to}","rb"),
                     # thumb=thumbnail,
