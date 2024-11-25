@@ -62,40 +62,111 @@ f = Fdown()
 import os
 from helpo.lazyprogress import progress_for_pyrogram
 import time
-async def download_and_send_video(client, message, url):
-    print(f"starting ")
-    video_links = f.get_links(url)
-    print(f"got links {video_links}")
-    video_duration = video_links.duration_in_seconds
-    # if video_duration > FACEBOOK_DURATION_LIMIT or video_duration == 0:
-    #     return message.reply(f"😢 This video's running time ({video_links.duration}) exceeds \nThe one I can download ({round(FACEBOOK_DURATION_LIMIT/60,2)} minutes).")
-    
-    saved_to = f.download_video(
+
+async def getlink(url):
+    try:
+        video_links = f.get_links(url)
+    except Exception as lazyerror:
+        print(lazyerror)
+    return video_links
+
+async def downlaod_vid(video_links):
+    try:
+        saved_to = f.download_video(
         video_links,
         progress_bar=False)
-    print(f"saved files to: {saved_to}")
-    if not saved_to:
-        await message.reply("❌ Failed to download the video.")
-        return
-    # thumbnail = f.session.get(video_links.cover_photo).content
-    thumbnail = f.session.get(video_links.cover_photo).content if video_links.cover_photo else None
-    
-    lms = await message.reply("<i>⚡ ᴘʀᴏᴄᴇssɪɴɢ ʏᴏᴜʀ ꜰɪʟᴇ ᴛᴏ ᴜᴘʟᴏᴀᴅ ᴏɴ ᴛᴇʟᴇɢʀᴀᴍ...</i>") 
-    lst = time.time()
-    print("Uploading to telegram")
-    await client.send_video(
-        message.chat.id,
-        open(saved_to, "rb"),
-        thumb=thumbnail,
-        caption=video_links.title if video_links.title else "Here is your video! 🎥",
-        progress=progress_for_pyrogram,
-        progress_args=(
-            f"Processing file upload",
-            lms,
-            lst
+    except Exception as lazyerror:
+        print(lazyerror)
+    return saved_to
+
+async def download_and_send_video(client, message, url):
+    try:
+        # Validate URL
+        if not f.validate_url(url, True):
+            await message.reply("❌ This is not a valid Facebook video link.")
+            return
+
+        await message.reply("✅ Valid Facebook video link. Starting download...")
+
+        # Get video links
+        video_links = await getlink(url)
+        if not video_links:
+            await message.reply("❌ Failed to fetch video links. Try again.")
+            return
+
+        # Download video
+        saved_to = await downlaod_vid(video_links)
+        if not saved_to:
+            await message.reply("❌ Failed to download the video. Try again later.")
+            return
+
+        # Process and upload
+        thumbnail = f.session.get(video_links.cover_photo).content if video_links.cover_photo else None
+        video_duration = video_links.duration_in_seconds
+        lms = await message.reply("<i>⚡ Processing your file to upload...</i>")
+        lst = time.time()
+
+        await client.send_video(
+            message.chat.id,
+            open(saved_to, "rb"),
+            thumb=thumbnail,
+            duration=video_duration,
+            caption=video_links.title or "Here is your video! 🎥",
+            progress=progress_for_pyrogram,
+            progress_args=(
+                "Uploading file",
+                lms,
+                lst
+            )
         )
-    )
-    os.remove(saved_to)
-    return
+        os.remove(saved_to)
+
+    except Exception as e:
+        await message.reply(f"An error occurred: {e}")
+
+
+# async def download_and_send_video(client, message, url):
+#     try:
+#         if f.validate_url(message.text, True):
+#             await message.reply("✅ Valid Facebook video link. Starting download...")
+#             await download_and_send_video(client=bot, message=message, url=message.text)
+#         else:
+#             await message.reply("❌ This is not a valid Facebook video link.")
+#     except Exception as e:
+#         await message.reply(f"An error occurred while validating the URL: {e}")
+    
+#     #getting url
+#     video_links = await getlink(url)
+#     video_duration = video_links.duration_in_seconds
+
+#     # waiting for the task to be downloaded
+#     saved_to = await downlaod_vid(video_links)
+
+#     print(f"saved files to: {saved_to}")
+
+#     if not saved_to:
+#         await message.reply("❌ Failed to download the video. Try after sometime")
+#         return
+#     # thumbnail = f.session.get(video_links.cover_photo).content
+#     thumbnail = f.session.get(video_links.cover_photo).content if video_links.cover_photo else None
+    
+#     lms = await message.reply("<i>⚡ ᴘʀᴏᴄᴇssɪɴɢ ʏᴏᴜʀ ꜰɪʟᴇ ᴛᴏ ᴜᴘʟᴏᴀᴅ ᴏɴ ᴛᴇʟᴇɢʀᴀᴍ...</i>") 
+#     lst = time.time()
+#     print("Uploading to telegram")
+#     await client.send_video(
+#         message.chat.id,
+#         open(saved_to, "rb"),
+#         thumb=thumbnail,
+#         duration=video_duration,
+#         caption=video_links.title if video_links.title else "Here is your video! 🎥",
+#         progress=progress_for_pyrogram,
+#         progress_args=(
+#             f"Processing file upload",
+#             lms,
+#             lst
+#         )
+#     )
+#     os.remove(saved_to)
+#     return
 
 # =======================================================================
