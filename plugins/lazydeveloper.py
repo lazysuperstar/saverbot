@@ -11,21 +11,40 @@ from plugins.pintrest_lazydeveloepr import download_pintrest_vid
 # from plugins.facebook_lazydeveloper import download_and_send_video
 from plugins.ytdl_lazy import handle_youtube_link, handle_youtube_playlist_link
 
-@Client.on_message(filters.regex(r'https?:\/\/(?:www\.)?(?:m\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=)?([a-zA-Z0-9_-]{11})$'))
-async def handle_single(bot, message):
+@Client.on_message(filters.private & filters.text)
+async def handle_youtube_links(bot, message):
     try:
-        url = message.text.strip()
-        await handle_youtube_link(bot, message, url)
+        if "youtube" in message.text.lower() or "youtu.be" in message.text.lower():
+            url = message.text.strip()
+            if "playlist" in url and "list=" in url:
+                # Handle playlist link
+                await handle_youtube_playlist_link(bot, message, url)
+            elif "watch?v=" in url or "youtu.be/" in url:
+                # Handle video link
+                await handle_youtube_link(bot, message, url)
+            else:
+                await handle_youtube_link(bot, message, url)
+                await message.reply("Invalid YouTube link. Please send a valid video or playlist URL.")
+        else:
+            await message.reply("This doesn't look like a YouTube link.")
     except Exception as e:
-        print(e)
+        print(f"Error: {e}")
 
-@Client.on_message(filters.regex(r"(?:(?:https?:)?//)?(?:www\.)?youtube\.com/playlist\?list=([a-zA-Z0-9_-]+)"))
-async def handle_playlist(bot, message):
-    try:
-        url = message.text.strip()
-        await handle_youtube_playlist_link(bot, message, url)
-    except Exception as e:
-        print(e)
+# @Client.on_message(filters.regex(r'https?:\/\/(?:www\.)?(?:m\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=)?([a-zA-Z0-9_-]{11})$'))
+# async def handle_single(bot, message):
+#     try:
+#         url = message.text.strip()
+#         await handle_youtube_link(bot, message, url)
+#     except Exception as e:
+#         print(e)
+
+# @Client.on_message(filters.regex(r"(?:(?:https?:)?//)?(?:www\.)?youtube\.com/playlist\?list=([a-zA-Z0-9_-]+)"))
+# async def handle_playlist(bot, message):
+#     try:
+#         url = message.text.strip()
+#         await handle_youtube_playlist_link(bot, message, url)
+#     except Exception as e:
+#         print(e)
 
 # @Client.on_message(filters.private & filters.text & ~filters.command(['start','users','broadcast']))
 # async def handle_incoming_message(client: Client, message: Message):
