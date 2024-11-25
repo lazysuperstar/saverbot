@@ -115,6 +115,3 @@ async def cb_handler(client, query: CallbackQuery):
             await query.message.delete()
 
 
-
-
-

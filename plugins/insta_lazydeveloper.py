@@ -10,7 +10,6 @@ import asyncio
 # Initialize @LazyDeveloperr Instaloader 
 insta = instaloader.Instaloader()
 
-
 async def download_from_lazy_instagram(client, message, url):
     # Extract shortcode from Instagram URL (assuming this is a function you implemented)
     post_shortcode = get_post_or_reel_shortcode_from_link(url)
@@ -70,7 +69,6 @@ async def download_from_lazy_instagram(client, message, url):
     lazydeveloper = await client.send_message(chat_id=message.chat.id, text=f"❤ ꜰᴇᴇʟ ꜰʀᴇᴇ ᴛᴏ sʜᴀʀᴇ ᴍᴇ ᴛᴏ ʏᴏᴜʀ ꜰʀɪᴇɴᴅ ᴄɪʀᴄʟᴇ...")
     await asyncio.sleep(100)
     await lazydeveloper.delete()
-
 
 # regex
 insta_post_or_reel_reg = r'(?:https?://www\.)?instagram\.com\S*?/(p|reel)/([a-zA-Z0-9_-]{11})/?'

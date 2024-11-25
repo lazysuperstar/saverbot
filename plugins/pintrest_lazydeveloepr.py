@@ -103,7 +103,7 @@ async def download_pintrest_vid(client, message, url):
             await asyncio.sleep(100)
             await lazydeveloper.delete()
         else:
-            await message.reply("**bana komutla beraber link gönder.**\n\n`send me the link with the command.`")
+            await message.reply("Send me the correct link !")
     except FileNotFoundError:
         return
 
@@ -138,6 +138,7 @@ def download_image(url):
     with open(TMP_DOWNLOAD_DIRECTORY + 'pinterest_iamge.jpg', 'wb') as photo_stream:
         photo_stream.write(image_to_download)
     return TMP_DOWNLOAD_DIRECTORY + 'pinterest_iamge.jpg'
+
 
 
 # Command to make an announcement to users using the bot

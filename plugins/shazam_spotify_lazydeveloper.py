@@ -1,44 +1,62 @@
-    # if re.search(instagram_regex, text):
-    #     msg_del = await message.reply("⏳")
-    #     app = FastDLAppDownloader()
-    #     vid = app.download_url(text)
-    #     if vid:
-    #         try:
-    #             await msg_del.delete()
-    #             await bot.send_document(message.chat.id, vid, caption="Downloaded via @Ultimatedownbot")
-    #             with open(f"{message.message_id}.mp4", 'wb') as video:
-    #                 rrr = requests.get(vid)
-    #                 video.write(rrr.content)
-    #             input_file = types.InputFile(f"{message.message_id}.mp4")
-    #             shazammusic = await shazamtop(f"{message.message_id}.mp4")
-    #             title = shazammusic['title']
-    #             if title is not None:
-    #                 musics = SearchFromSpotify(track_name=title, limit=5)
-    #                 audio_urls = DownloadMusic(musics)
-    #             inline_kbs = types.InlineKeyboardMarkup()
-    #             os.remove(f"{message.message_id}.mp4")
+# import os
+# import re
+# import requests
+# from aiogram import types
+# from aiogram.types import InputFile
+# from shazamio import Shazam
+
+# # Assuming these are imported from your actual code
+# # from your_module import FastDLAppDownloader, shazamtop, SearchFromSpotify, DownloadMusic
+
+# async def ShazamIO(video_path:str):
+# 	shazam = Shazam()
+# 	out = await shazam.recognize_song(video_path)
+# 	return out
 
 
-                    
-                
-    #         except Exception as err:
-    #             with open(f"{message.message_id}.mp4", 'wb') as video:
-    #                 rrr = requests.get(vid)
-    #                 video.write(rrr.content)
-    #             input_file = types.InputFile(f"{message.message_id}.mp4")
-    #             await bot.send_document(message.chat.id, document=input_file,caption="Downloaded via @Ultimatedownbot")
-    #             shazammusic = await shazamtop(f"{message.message_id}.mp4")
-    #             title = shazammusic['title']
 
+# async def shazam_spotify(message: types.Message):
+#     text = message.text
+#     if re.search(instagram_regex, text):
+#         msg_del = await message.reply("⏳ Downloading...")
+#         app = FastDLAppDownloader()
 
-    #             os.remove(f"{message.message_id}.mp4")
-            
-    #         with open(f"{message.message_id}.mp4", 'wb') as video:
-    #             rrr = requests.get(vid)
-    #             video.write(rrr.content)
-    #         shazammusic = await shazamtop(f"{message.message_id}.mp4")
-    #         title = shazammusic['title']
+#         # Get video download link from FastDLApp
+#         vid_url = app.download_url(text)
 
-    #         os.remove(f"{message.message_id}.mp4")
-            
+#         if vid_url:
+#             try:
+#                 # Download the video
+#                 video_path = await download_video(vid_url, message.message_id)
 
+#                 # Send the downloaded video to user
+#                 await msg_del.delete()
+#                 input_file = InputFile(video_path)
+#                 await bot.send_document(message.chat.id, input_file, caption="Downloaded via @Ultimatedownbot")
+
+#                 # Use Shazam to identify the music
+#                 shazammusic = await shazamtop(video_path)
+#                 title = shazammusic.get('title')
+
+#                 if title:
+#                     # Search for the music on Spotify
+#                     musics = SearchFromSpotify(track_name=title, limit=5)
+#                     audio_urls = DownloadMusic(musics)
+#                     # You can send the audio URLs or process them as needed
+
+#                 # Clean up video file after processing
+#                 os.remove(video_path)
+
+#             except Exception as err:
+#                 # Handle error: if anything goes wrong
+#                 await msg_del.delete()
+#                 await message.reply(f"Error: {err}")
+
+#                 # Clean up in case of error
+#                 if os.path.exists(video_path):
+#                     os.remove(video_path)
+
+#             finally:
+#                 # Ensure that the video is deleted after processing
+#                 if os.path.exists(video_path):
+#                     os.remove(video_path)
