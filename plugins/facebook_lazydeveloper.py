@@ -63,7 +63,9 @@ import os
 from helpo.lazyprogress import progress_for_pyrogram
 import time
 async def download_and_send_video(client, message, url):
+    print(f"starting ")
     video_links = f.get_links(url)
+    print(f"got links {video_links}")
     video_duration = video_links.duration_in_seconds
     # if video_duration > FACEBOOK_DURATION_LIMIT or video_duration == 0:
     #     return message.reply(f"😢 This video's running time ({video_links.duration}) exceeds \nThe one I can download ({round(FACEBOOK_DURATION_LIMIT/60,2)} minutes).")
