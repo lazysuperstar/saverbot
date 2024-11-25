@@ -77,24 +77,24 @@ async def handle_youtube_playlist_link(bot, message, url):
     except Exception as e:
         await bot.send_message(message.chat.id, f"Error: {e}")
 
-async def download_youtube_video(client, message, url):
-    try:
-        video_regex = r'https?:\/\/(?:www\.)?(?:m\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=)?([a-zA-Z0-9_-]{11})$'
-        playlist_regex = r"(?:(?:https?:)?//)?(?:www\.)?youtube\.com/playlist\?list=([a-zA-Z0-9_-]+)"
+# async def download_youtube_video(client, message, url):
+#     try:
+#         video_regex = r'https?:\/\/(?:www\.)?(?:m\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=)?([a-zA-Z0-9_-]{11})$'
+#         playlist_regex = r"(?:(?:https?:)?//)?(?:www\.)?youtube\.com/playlist\?list=([a-zA-Z0-9_-]+)"
 
-        # Match URL
-        video_match = re.match(video_regex, url)
-        playlist_match = re.match(playlist_regex, url)
+#         # Match URL
+#         video_match = re.match(video_regex, url)
+#         playlist_match = re.match(playlist_regex, url)
 
-        # Handle matches
-        if video_match:
-            await handle_youtube_link(client, message, url)
-        elif playlist_match:
-            await handle_youtube_playlist_link(client, message, url)
-        else:
-            await client.send_message(message.chat.id, "Invalid YouTube link. Please send a valid video or playlist URL.")
-    except Exception as lazyerror:
-        print(lazyerror)
+#         # Handle matches
+#         if video_match:
+#             await handle_youtube_link(client, message, url)
+#         elif playlist_match:
+#             await handle_youtube_playlist_link(client, message, url)
+#         else:
+#             await client.send_message(message.chat.id, "Invalid YouTube link. Please send a valid video or playlist URL.")
+#     except Exception as lazyerror:
+#         print(lazyerror)
 
 # =========================================================================
 # =========================================================================
