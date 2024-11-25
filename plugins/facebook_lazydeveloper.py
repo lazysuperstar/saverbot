@@ -79,25 +79,30 @@ from fdown_api import Fdown
 from os import remove
 from config import FACEBOOK_DURATION_LIMIT
 f = Fdown()
+from plugins.lazyprogress import tqdm_progress
+import os
 
 async def download_and_send_video(client, message, url):
     video_links = f.get_links(url)
     video_duration = video_links.duration_in_seconds
-    if video_duration > FACEBOOK_DURATION_LIMIT or video_duration == 0:
-        return message.reply(f"😢 This video's running time ({video_links.duration}) exceeds \nThe one I can download ({round(FACEBOOK_DURATION_LIMIT/60,2)} minutes).")
+    # if video_duration > FACEBOOK_DURATION_LIMIT or video_duration == 0:
+    #     return message.reply(f"😢 This video's running time ({video_links.duration}) exceeds \nThe one I can download ({round(FACEBOOK_DURATION_LIMIT/60,2)} minutes).")
     
-    saved_to = f.download_video(
-        video_links,
-        progress_bar=False)
-
-    thumbnail = f.session.get(video_links.cover_photo).content
+    saved_to = f.download_video(video_links)
+    
+    if not saved_to:
+            await message.reply("❌ Failed to download the video.")
+            return
+    # thumbnail = f.session.get(video_links.cover_photo).content
+    thumbnail = f.session.get(video_links.cover_photo).content if video_links.cover_photo else None
 
     client.send_video(
         message.chat.id,
         open(saved_to, "rb"),
-        thumbnail=thumbnail,
+        thumb=thumbnail,
         caption=video_links.title if video_links.title else "Here is your video! 🎥"
     )
+    
     remove(saved_to)
     return
 
